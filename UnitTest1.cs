@@ -38,9 +38,9 @@ namespace Lab7Tech
             yield return new object[] { square, (Point)(0, 0), 0 };
             // На угле
             yield return new object[] { square, (Point)(0, 5), 0 };
-            // На той же X координате что сторона
+            // Снаружи и на той же X координате что сторона
             yield return new object[] { square, (Point)(0, -6), -1 };
-            // на той же Y координате что сторона
+            // Снаружи и на той же Y координате что сторона
             yield return new object[] { square, (Point)(-1, -5), -1 };
             // Где-то снаружи
             yield return new object[] { square, (Point)(-2, 3), -1 };
