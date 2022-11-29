@@ -30,6 +30,7 @@ namespace Lab7Tech
                 (0, -5),
                 (0,  5),
                 (10, 5),
+                (15, 0),
                 (10,-5)
             });
 
@@ -45,6 +46,8 @@ namespace Lab7Tech
             yield return new object[] { square, (Point)(-2, 3), -1 };
             // √де-то внутри
             yield return new object[] { square, (Point)(1, 1), 1 };
+            // ¬нутри и на той же Y координате что угол
+            yield return new object[] { square, (Point)(1, 0), 1 };
         }
     };
 
