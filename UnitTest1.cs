@@ -128,23 +128,20 @@ namespace Lab7Tech
 
             return Math.Abs(point.X - x) < double.Epsilon || Math.Abs(point.Y - y) < double.Epsilon;
         }
-
+        
         public int IsInside(Point point)
         {
-            int count = 0;
+            uint count = 0;
             for (int i = 0; i < _points.Length; i++)
             {
 
                 int j = (i + 1) % _points.Length;
 
                 if (IsOnLine(_points[i], _points[j], point)) return 0;
-
-                if (IsIntersect(_points[i], _points[j], point))
-                {
-                    count += 1;
-                }
+                
+                count += Convert.ToUInt32(IsIntersect(_points[i], _points[j], point));
             }
-            return -1 + (count % 2) * 2;
+            return -1 + (byte)(count % 2) * 2;
         }
     }
 }
