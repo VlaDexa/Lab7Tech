@@ -110,35 +110,32 @@ namespace Lab7Tech
         /// <param name="second">Конец отрезка</param>
         /// <param name="point">Точка</param>
         /// <returns></returns>
-        private static bool IsOnLine(Point first, Point second, Point point)
+        private static bool IsOnLine(Point first, Point second, Point point, double epsilon = 2.220446049250313e-16)
         {
-            if (point.X - Math.Max(first.X, second.X) > double.Epsilon ||
-                Math.Min(first.X, second.X) - point.X > double.Epsilon ||
-                point.Y - Math.Max(first.Y, second.Y) > double.Epsilon ||
-                Math.Min(first.Y, second.Y) - point.Y > double.Epsilon)
+            if (point.X - Math.Max(first.X, second.X) > epsilon ||
+                Math.Min(first.X, second.X) - point.X > epsilon ||
+                point.Y - Math.Max(first.Y, second.Y) > epsilon ||
+                Math.Min(first.Y, second.Y) - point.Y > epsilon)
                 return false;
 
-            if (Math.Abs(second.X - first.X) < double.Epsilon)
-                return Math.Abs(first.X - point.X) < double.Epsilon || Math.Abs(second.X - point.X) < double.Epsilon;
-            if (Math.Abs(second.Y - first.Y) < double.Epsilon)
-                return Math.Abs(first.Y - point.Y) < double.Epsilon || Math.Abs(second.Y - point.Y) < double.Epsilon;
+            if (Math.Abs(second.X - first.X) < epsilon)
+                return Math.Abs(first.X - point.X) < epsilon || Math.Abs(second.X - point.X) < epsilon;
+            if (Math.Abs(second.Y - first.Y) < epsilon)
+                return Math.Abs(first.Y - point.Y) < epsilon || Math.Abs(second.Y - point.Y) < epsilon;
 
             double x = first.X + (point.Y - first.Y) * (second.X - first.X) / (second.Y - first.Y);
             double y = first.Y + (point.X - first.X) * (second.Y - first.Y) / (second.X - first.X);
 
-            return Math.Abs(point.X - x) < double.Epsilon || Math.Abs(point.Y - y) < double.Epsilon;
+            return Math.Abs(point.X - x) < epsilon || Math.Abs(point.Y - y) < epsilon;
         }
-        
+
         public int IsInside(Point point)
         {
             uint count = 0;
-            for (int i = 0; i < _points.Length; i++)
+            for (int i = 0, j = 1; i < _points.Length; i++, j = (++j) % _points.Length)
             {
-
-                int j = (i + 1) % _points.Length;
-
                 if (IsOnLine(_points[i], _points[j], point)) return 0;
-                
+
                 count += Convert.ToUInt32(IsIntersect(_points[i], _points[j], point));
             }
             return -1 + (byte)(count % 2) * 2;
