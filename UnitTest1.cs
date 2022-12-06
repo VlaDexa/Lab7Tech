@@ -1,3 +1,4 @@
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Lab7Tech
 {
     /*
@@ -13,44 +14,6 @@ namespace Lab7Tech
 
     "0", если точка a лежит на стороне многоугольника.
      */
-    [TestClass]
-    public class PolygonTest
-    {
-        [DynamicData(nameof(InsideGenerator), DynamicDataSourceType.Method)]
-        [DataTestMethod]
-        public void TestInside(Polygon poly, Point point, int expected)
-        {
-            Assert.AreEqual(expected, poly.IsInside(point));
-        }
-
-        private static IEnumerable<object[]> InsideGenerator()
-        {
-            var square = new Polygon(new Point[]
-            {
-                (0, -5),
-                (0,  5),
-                (10, 5),
-                (15, 0),
-                (10,-5)
-            });
-
-            // На стороне
-            yield return new object[] { square, (Point)(0, 0), 0 };
-            // На угле
-            yield return new object[] { square, (Point)(0, 5), 0 };
-            // Снаружи и на той же X координате что сторона
-            yield return new object[] { square, (Point)(0, -6), -1 };
-            // Снаружи и на той же Y координате что сторона
-            yield return new object[] { square, (Point)(-1, -5), -1 };
-            // Где-то снаружи
-            yield return new object[] { square, (Point)(-2, 3), -1 };
-            // Где-то внутри
-            yield return new object[] { square, (Point)(1, 1), 1 };
-            // Внутри и на той же Y координате что угол
-            yield return new object[] { square, (Point)(1, 0), 1 };
-        }
-    };
-
     public class Point
     {
         public double X { get; set; }
@@ -78,7 +41,7 @@ namespace Lab7Tech
         }
 
         /// <summary>
-        /// Проверяет пересекает ли выпущенный из точки в направлении центра луч сторону многоугольника
+        /// Проверяет пересекает ли выпущенный из точки вправо луч
         /// </summary>
         /// <param name="first">Начало стороны многоугольника</param>
         /// <param name="second">Конец стороны многоугольника</param>
@@ -140,5 +103,72 @@ namespace Lab7Tech
             }
             return -1 + (byte)(count % 2) * 2;
         }
+
+        [TestClass]
+        public class PolygonTest
+        {
+            [DataRow(0, 5, 0, -5, -1, 0, true)]
+            [DataRow(0, 5, 0, -5, 0, 0, true)]
+            [DataRow(0, 5, 0, -5, 1, 0, false)]
+            [DataRow(0, 5, 0, -5, 0, -6, false)]
+            [DataTestMethod]
+            public void TestIntersect(double x1, double y1, double x2, double y2, double x3, double y3, bool expected)
+            {
+                Point first = new(x1,y1);
+                Point second = new(x2, y2);
+                Point point = new(x3, y3);
+
+                Assert.AreEqual(expected, IsIntersect(first,second,point));
+            }
+
+            [DataRow(0, 5, 0, -5, 0, 0, true)]
+            [DataRow(0, 5, 0, -5, 0, 5, true)]
+            [DataRow(0, 5, 0, -5, 0, -5, true)]
+            [DataRow(0, 5, 0, -5, 0, -6, false)]
+            [DataRow(0, 5, 0, -5, 1, 0, false)]
+            [DataTestMethod]
+            public void TestOnLine(double x1, double y1, double x2, double y2, double x3, double y3, bool expected)
+            {
+                Point first = new(x1, y1);
+                Point second = new(x2, y2);
+                Point point = new(x3, y3);
+
+                Assert.AreEqual(expected, IsOnLine(first, second, point));
+            }
+            
+            [DynamicData(nameof(InsideGenerator), DynamicDataSourceType.Method)]
+            [DataTestMethod]
+            public void TestInside(Polygon poly, Point point, int expected)
+            {
+                Assert.AreEqual(expected, poly.IsInside(point));
+            }
+
+            private static IEnumerable<object[]> InsideGenerator()
+            {
+                var square = new Polygon(new Point[]
+                {
+                (0, -5),
+                (0,  5),
+                (10, 5),
+                (15, 0),
+                (10,-5)
+                });
+
+                // На стороне
+                yield return new object[] { square, (Point)(0, 0), 0 };
+                // На угле
+                yield return new object[] { square, (Point)(0, 5), 0 };
+                // Снаружи и на той же X координате что сторона
+                yield return new object[] { square, (Point)(0, -6), -1 };
+                // Снаружи и на той же Y координате что сторона
+                yield return new object[] { square, (Point)(-1, -5), -1 };
+                // Где-то снаружи
+                yield return new object[] { square, (Point)(-2, 3), -1 };
+                // Где-то внутри
+                yield return new object[] { square, (Point)(1, 1), 1 };
+                // Внутри и на той же Y координате что угол
+                yield return new object[] { square, (Point)(1, 0), 1 };
+            }
+        };
     }
 }
